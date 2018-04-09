@@ -44695,6 +44695,10 @@ var _auth = __webpack_require__(29);
 
 var _reactRouterDom = __webpack_require__(8);
 
+var _Tweet = __webpack_require__(130);
+
+var _Tweet2 = _interopRequireDefault(_Tweet);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44702,8 +44706,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-//import Tweet from './Tweet';
 
 var SignX = function (_Component) {
   _inherits(SignX, _Component);
@@ -44720,7 +44722,7 @@ var SignX = function (_Component) {
       // if  the user is authenticated,
       // change the location to /feed
       // via this.props.history.push
-      if (this.props.authenticated) {
+      if (this.props.isAuthenticated) {
         this.props.history.push('/feed');
       }
     }
@@ -44728,7 +44730,8 @@ var SignX = function (_Component) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       // do the same thing as in component did mount
-      if (this.props.authenticated) {
+      if (this.props.isAuthenticated) {
+        console.log('I get here');
         this.props.history.push('/feed');
       }
     }

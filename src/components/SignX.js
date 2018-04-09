@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { loginUser, registerUser } from '../actions/auth';
 import { withRouter } from 'react-router-dom';
-//import Tweet from './Tweet';
+import Tweet from './Tweet';
 
 class SignX extends Component {
   constructor(props) {
@@ -13,14 +13,15 @@ class SignX extends Component {
     // if  the user is authenticated,
     // change the location to /feed
     // via this.props.history.push
-    if (this.props.authenticated) {
+    if (this.props.isAuthenticated) {
       this.props.history.push('/feed');
     }
   }
 
   componentDidUpdate() {
     // do the same thing as in component did mount
-      if (this.props.authenticated) {
+      if (this.props.isAuthenticated) {
+        console.log('I get here');
       this.props.history.push('/feed')
     }
   }
