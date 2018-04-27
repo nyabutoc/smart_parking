@@ -27,11 +27,12 @@ module.exports = (app) => {
 
     // STUB
     let username = req.body.username;
+    //console.log('username' + username);
     let password = req.body.password;
-    let species = req.body.species;
-    let name = req.body.name;
-    let photo = req.body.photo;
-    User.addUser(username, password, species, photo, name)
+    //let species = req.body.species;
+    //let name = req.body.name;
+    //let photo = req.body.photo;
+    User.addUser(username, password)
       .then((user) => {
         var payload = {
           id: user._id,

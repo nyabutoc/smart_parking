@@ -7,11 +7,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import SignX from './SignX';
 import Logout from './Logout';
 import AuthHOC from './AuthHOC';
-import NewsFeed from './NewsFeed';
+//import NewsFeed from './NewsFeed';
 import NavBar from './NavBar';
-import EditProfile from './EditProfile';
+//import EditProfile from './EditProfile';
 import Flashes from './Flashes';
-import Profile from './Profile';
+//import Profile from './Profile';
+import MyMap from './Map'; 
+import CheckParkingSpot from './CheckParkingSpot';
+import Checkin from './checkIn';
 
 class App extends Component {
   constructor(props) {
@@ -41,16 +44,11 @@ class App extends Component {
 
     return (
       <div className="container-fluid">
-          <NavBar/>
-          <Flashes/>
+          <MyMap/>
+          <CheckParkingSpot/>
+          <Checkin/>
           <div>
             <Switch>
-              <Route path='/profile/:id?' component={AuthHOC(Profile)}/>
-              <Route path='/logout' component={AuthHOC(Logout)}/>
-              <Route path='/signx' component={SignX}/>
-              <Route path='/feed' component={AuthHOC(NewsFeed)}/>
-              <Route path='/edit-profile' component = {AuthHOC(EditProfile)}/>
-              <Route component={SignX}/>
             </Switch>
           </div>
       </div>

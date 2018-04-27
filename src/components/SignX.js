@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { loginUser, registerUser } from '../actions/auth';
 import { withRouter } from 'react-router-dom';
-import Tweet from './Tweet';
+//import Tweet from './Tweet';
 
 class SignX extends Component {
   constructor(props) {

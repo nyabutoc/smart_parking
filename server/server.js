@@ -38,6 +38,9 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // accounts uses the app secret key and we need to give it  a reference
 // to the main app instantiation we made now.
 // STUB
+const streetRoutes = require('./api/street')
+
+app.use('/street', streetRoutes(app));
 const accountRoutes = require('./api/account');
 app.use('/account', accountRoutes(app));
 // ENDSTUB
@@ -55,8 +58,8 @@ app.use('/api', profile(app));
 // mount routes so that you can access routes as domain.com/api/tweet/
 // also pass in the app
 // STUB
-const tweet = require('./api/tweet');
-app.use('/api', tweet(app));
+//const tweet = require('./api/tweet');
+//app.use('/api', tweet(app));
 // ENDSTUB
 
 
@@ -64,8 +67,8 @@ app.use('/api', tweet(app));
 // mount routes  so that you can access routes  as  domain.com/api/newsfeed
 // also pass in the app
 // STUB
-const newsfeed = require('./api/newsfeed');
-app.use('/api', newsfeed(app));
+//const newsfeed = require('./api/newsfeed');
+//app.use('/api', newsfeed(app));
 // ENDSTUB
 
 

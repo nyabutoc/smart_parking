@@ -55,6 +55,7 @@ export function loadTweetsForProfile(userId) {
 }
 
 
+
 export function favoriteTweet(tweetId) {
   // authenticated request example
   // we send a POST request that is authenticated to /api/tweet/${tweetId}/favorite

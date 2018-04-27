@@ -16,19 +16,22 @@ let userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   name: { type: String },
   password: { type: String, required: true },
-  species: { type: String },
-  image: { type: String, default: config.defaultPic },
-  following: [{
+  history: [{
     type: Schema.ObjectId,
+    ref: 'StreetParking'
   }],
-  followers: [{
-    type: Schema.ObjectId,
-  }],
-  // ENDSTUB
+  checked_in: {
+    is_checked_in : Boolean,
+    street : {
+      type:Schema.ObjectId,
+      ref: 'StreetParking'
+    }
+    
+  }
 });
 
 
-userSchema.statics.addUser = function (username, password, species, image, name) {
+userSchema.statics.addUser = function (username, password) {
   // TODO: create a new user object with username, password, species, image, and name equal to  the
   // specified arguments. Once  this object is created, use bcrypt.hash to hash the
   // newUser.password  and set  the newUser's password equal to the hash. Finally call save
@@ -37,10 +40,7 @@ userSchema.statics.addUser = function (username, password, species, image, name)
   // STUB
   let newUser = new this({
     username: username,
-    password: password,
-    species: species,
-    image: image.length > 0 ? image : config.defaultPic,
-    name: name,
+    password: password
   });
   return bcrypt.hash(newUser.password, 1).then((hash) => {
     newUser.password = hash;
@@ -63,98 +63,49 @@ userSchema.statics.check = function (username, password) {
         return bcrypt.compare(password, user.password);
       }
     });
-  // ENDSTUB
 };
 
-userSchema.statics.getFormattedProfileById = function (id, currentUserId) {
-  // given an id and  a current user id (corresponding t o  the person looking at  the profile
-  // return an object with the following structure
-  //  {
-  //    name:  ...,
-  //    species: ...,
-  //    image: ...,
-  //    followers: ...,
-  //    following: ...,
-  //    isFollowing: true if currentUser is following user with _id == id, else false
-  //  }
-  //  If there is no user, throw a new  error 'No  such user with id'
-  //  returns a promise
-  //  STUB
-  return this.findOne({ _id: id })
-    .then((user) => {
-      if (user) {
-        return {
-          name: user.name,
-          species: user.species,
-          image: user.image,
-          followers: user.followers,
-          following: user.following,
-          isFollowing: user.followers.indexOf(currentUserId) > -1 ? true : false,
-        };
-      } else {
-        throw new Error('No such user with id');
-      }
+//to be done somewhere else
+////find the streetParking
+////check if a parking spot is available
+//save its reference
+
+//gets a reference of a street
+userSchema.statics.checkIn = function (userId,street_id) {
+  //update the capacity of street_id
+  //update checked in
+  //
+  console.log("street_id : "+ street_id);
+  return this.model('Street').findOne({_id : street_id})
+    .then(street => {
+      street.capacity = street.capacity - 1; //decrease the capacity
+      return street.save()
+        .then(street => {
+          return this.findOne({_id:userId})
+            .then(thisUser => {
+              console.log(thisUser);
+              if (thisUser.checked_in.is_checked_in) {
+                throw new Error("checkout first");
+                console.log("I am already checked in bruh");
+              }
+              thisUser.checked_in.is_checked_in = true;
+              thisUser.checked_in.street = street._id;
+              return thisUser.save();
+            }) ;   
+        });
     });
-  // ENDSTUB
-};
+}
 
-userSchema.statics.updateUserProfile = function (id, name, species, image) {
-  // given  the parameters in the function, find the  user with  _id equal to id  and update their
-  // name, species, and image.
-  // save  the  user at the end
-  // returns a promise.
-  // STUB
-  return this.findOne({ _id: id })
-    .then((user) => {
-      user.name = name;
-      user.species = species;
-      user.image = image.length > 0 ? image : config.defaultPic;
-      return user.save();
+userSchema.statics.checkOut = function (userId) {
+  console.log("userId : " + userId);
+  return this.findOne({_id:userId})
+    .then(thisUser => {
+      thisUser.checked_in.is_checked_in = false;
+      return thisUser.save();
     });
-  // ENDSTUB
-};
+}
 
-userSchema.statics.follow = function (followerId, followingId) {
-  // given a followerId and followingId, update  the following and followers relationships like so;
-  // Let u1 correspond to the  user with followerId an u2 correspond to the user with followingId
-  //  (note  this is just  for explaining, you dont  need to have  these variable names)
-  //  - if u1 is already following u2, remove u2 from the following array of u1 and from  the followers
-  //    array of u2
-  //  - if u1 isn't following u2 already, add u2 to  the following array of u1 and the followers
-  //    array of u2.
-  //  save both users
-  //  returns a promise
-  //  STUB
-  let followerUser;
-  let followingUser;
-  let type;
 
-  return this.findOne({ _id: followerId })
-    .then((follower) => {
-      followerUser = follower;
-      return this.findOne({ _id: followingId });
-    })
-    .then((following) => {
-      followingUser = following;
-      if (followerUser.following.indexOf(followingUser._id) > -1) {
-        type = 'unfollowing';
-        followerUser.following.remove(followingUser);
-      } else {
-        type = 'following';
-        followerUser.following.push(followingUser);
-      }
-      return followerUser.save();
-    })
-    .then((res) => {
-      if (type === 'unfollowing') {
-        followingUser.followers.remove(followerUser);
-      } else {
-        followingUser.followers.push(followerUser);
-      }
-      return followingUser.save();
-    })
-    .then(res => this.getFormattedProfileById(followingId, followerId));
-  // ENDSTUB
-};
+
 
 module.exports = mongoose.model('User', userSchema);
